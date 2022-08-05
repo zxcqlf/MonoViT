@@ -3,9 +3,11 @@
 This is the reference PyTorch implementation for training and testing depth estimation models using the method described in
 
 > **MonoViT: Self-Supervised Monocular Depth Estimation with a Vision Transformer** [arxiv]()
->Chaoqiang Zhao, Youmin Zhang, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia
->
+>Chaoqiang Zhao*, Youmin Zhang*, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia
 
+
+<div class='paper-box'><div class='paper-box-image'><img src='fig/kittiandds.png' alt="sym" width="90%"></div>
+<div class='paper-box-text' markdown="1">
 
 
 If you find our work useful in your research please consider citing our paper:
@@ -33,9 +35,7 @@ pip install timm einops IPython
 ```
 We ran our experiments with PyTorch 1.9.0, CUDA 11.1, Python 3.7 and Ubuntu 18.04.
 
-<!-- We recommend using a [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to avoid dependency conflicts.
-
-We also recommend using `pillow-simd` instead of `pillow` for faster image preprocessing in the dataloaders. -->
+Note that our code is built based on [Monodepth2](https://github.com/nianticlabs/monodepth2)
 
 ## Results
 
@@ -91,18 +91,21 @@ You can train on a custom monocular or stereo dataset by writing a new dataloade
 ## ⏳ Training
 
 PLease download the ImageNet-1K pretrained MPViT [model](https://dl.dropbox.com/s/y3dnmmy8h4npz7a/mpvit_small.pth) to `./ckpt/`.
+
+For training, please download monodepth2, replace the depth network, and revise the setting of the optimizer and learning rate according to `trainer.py`. 
+
 By default models and tensorboard event files are saved to `./tmp/<model_name>`.
 This can be changed with the `--log_dir` flag.
 
 
 **Monocular training:**
 ```shell
-python train.py --model_name mono_model
+python train.py --model_name mono_model --learning_rate 5e-5
 ```
 
 **Monocular + stereo training:**
 ```shell
-python train.py --model_name mono+stereo_model --use_stereo
+python train.py --model_name mono+stereo_model --use_stereo --learning_rate 5e-5
 ```
 
 
@@ -116,10 +119,7 @@ CUDA_VISIBLE_DEVICES=1 python train.py --model_name mono_model
 
 ## 📊 KITTI evaluation
 
-To prepare the ground truth depth maps run:
-```shell
-python export_gt_depth.py --data_path kitti_data --split eigen
-python export_gt_depth.py --data_path kitti_data --split eigen_benchmark
+To prepare the ground truth depth maps, please follow the monodepth2.
 ```
 ...assuming that you have placed the KITTI dataset in the default location of `./kitti_data/`.
 
@@ -138,6 +138,7 @@ The three different values possible for `eval_split` are explained here:
 | **`eigen_benchmark`** | 652           | `--split eigen_zhou` (default) or `--split eigen_full`  | Evaluate with the improved ground truth from the [new KITTI depth benchmark](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction) |
 | **`benchmark`**       | 500           | `--split benchmark`        | The [new KITTI depth benchmark](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction) test files. |
 
+Contact us: zhaocqilc@gmail.com
 
 ## Acknowledgement
 Thanks the authors for their works:
