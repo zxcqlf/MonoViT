@@ -6,11 +6,11 @@ import torch
 import torch.nn as nn
 
 from collections import OrderedDict
-from layers import *
+#from layers import *
 
-from .resnet_encoder import ResnetEncoder
+#from .resnet_encoder import ResnetEncoder
 from .hr_decoder import DepthDecoder
-from .pose_decoder import PoseDecoder
+#from .pose_decoder import PoseDecoder
 from .mpvit import *
 
 
@@ -23,36 +23,18 @@ class DeepNet(nn.Module):
         self.num_pose_frames=num_pose_frames
         self.scales = scales
 
-        if self.type =='depthnet':
-            self.encoder = ResnetEncoder(
-            self.num_layers, self.weights_init == "pretrained")
-            self.decoder = DepthDecoder(
-            self.encoder.num_ch_enc, self.scales)
 
-        elif self.type =='mpvitnet':
+        if self.type =='mpvitnet':
             self.encoder = mpvit_small()
-            #self.decoder = MPDecoder()
             self.decoder = DepthDecoder()
  
-        elif self.type == 'posenet':
-            self.encoder = ResnetEncoder(
-                self.num_layers,
-                self.weights_init == "pretrained",
-                num_input_images=self.num_pose_frames)
-            self.decoder = PoseDecoder(
-                self.encoder.num_ch_enc,
-                num_input_features=1,
-                num_frames_to_predict_for=2)
         else:
             print("wrong type of the networks, only depthnet and posenet")
     
 
     def forward(self, inputs):
-                #self.outputs[("disp", i)] = self.sigmoid(self.convs[("dispconv", i)](x))
-        if self.type =='depthnet': 
+        if self.type =='mpvitnet': 
             self.outputs = self.decoder(self.encoder(inputs))
-        elif self.type =='mpvitnet': 
+        else:
             self.outputs = self.decoder(self.encoder(inputs))
-        elif self.type =='posenet': 
-            self.outputs = self.decoder([self.encoder(inputs)])
         return self.outputs

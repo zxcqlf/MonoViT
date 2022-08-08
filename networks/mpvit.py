@@ -612,9 +612,9 @@ class MPViT(nn.Module):
         num_path=[4, 4, 4, 4],
         embed_dims=[64, 128, 256, 512],
         num_heads=[8, 8, 8, 8],
-        drop_path_rate=0.0,
+        drop_path_rate=0.2,
         norm_cfg=dict(type="BN"),
-        norm_eval=True,
+        norm_eval=False,
         pretrained=None,
     ):
         super().__init__()
@@ -810,8 +810,6 @@ def mpvit_small(**kwargs):
         embed_dims=[64, 128, 216, 288],
         mlp_ratios=[4, 4, 4, 4],
         num_heads=[8, 8, 8, 8],
-        drop_path_rate=0.2,#num_heads=[8, 8, 8, 8],
-        norm_eval=False,#num_heads=[8, 8, 8, 8],
         **kwargs,
     )
     checkpoint = torch.load('./ckpt/mpvit_small.pth', map_location=lambda storage, loc: storage)['model']

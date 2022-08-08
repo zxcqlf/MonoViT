@@ -87,7 +87,7 @@ def evaluate(opt):
                                 pin_memory=True, drop_last=False)
 
         encoder = networks.mpvit_small() #networks.ResnetEncoder(opt.num_layers, False)
-        encoder.num_ch_enc = [64,64,128,216,288]  # = networks.ResnetEncoder(opt.num_layers, False)
+        encoder.num_ch_enc = [64,128,216,288,288]  # = networks.ResnetEncoder(opt.num_layers, False)
         depth_decoder = networks.DepthDecoder()
 
         model_dict = encoder.state_dict()

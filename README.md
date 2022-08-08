@@ -3,6 +3,7 @@
 This is the reference PyTorch implementation for training and testing depth estimation models using the method described in
 
 > **MonoViT: Self-Supervised Monocular Depth Estimation with a Vision Transformer** [arxiv]()
+> 
 >Chaoqiang Zhao*, Youmin Zhang*, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia
 
 
@@ -37,17 +38,17 @@ We ran our experiments with PyTorch 1.9.0, CUDA 11.1, Python 3.7 and Ubuntu 18.0
 
 Note that our code is built based on [Monodepth2](https://github.com/nianticlabs/monodepth2)
 
-## Results
+## Results on KITTI
 
 We provide the following  options for `--model_name`:
 
-| `--model_name`          | Training modality | Imagenet pretrained? | Model resolution  | KITTI abs. rel. error |  delta < 1.25  |
-|-------------------------|-------------------|--------------------------|-----------------|------|----------------|
-| [`mono_640x192`](https://drive.google.com/drive/folders/1VWDPuqiMPDD2P--Oka-yJgh8z7ouCX4D?usp=sharing)          | Mono              | Yes | 640 x 192                | 0.099                 | 0.900          |
-| [`mono+stereo_640x192`](https://drive.google.com/drive/folders/1_HPsL1Vg3s0LdOykfTT0aMlE6-u3IxQn?usp=sharing)   | Mono + Stereo     | Yes | 640 x 192                | 0.098                 | 0.904         |
-| [`mono_1024x320`](https://drive.google.com/drive/folders/1EDTSZ59CGW9rUoDL3EwEKn3PpZpUUGsS?usp=sharing)         | Mono              | Yes | 1024 x 320               | 0.096                | 0.908          |
-| [`mono+stereo_1024x320`](https://drive.google.com/drive/folders/1tez1RQFO33MMyVAq_gkOVHoL2TO98-TH?usp=sharing)  | Mono + Stereo     | Yes | 1024 x 320               | 0.093                 | 0.912         |
-| [`mono_1280x384`](https://drive.google.com/drive/folders/1l3egRvLaoBqgYrgfktgpJt613QwZ4twT?usp=sharing)         | Mono              | Yes | 1024 x 320               | 0.094                 | 0.912         |
+| `--model_name`          | Training modality | Pretrained? | Model resolution  |Abs Rel| Sq Rel| RMSE| RMSE log|  delta < 1.25  | delta < 1.25^2  | delta < 1.25^3  |
+|-----------------------|-------------|------|-----------------|----|----|----|------|--------|--------|--------|
+| [`mono_640x192`](https://drive.google.com/drive/folders/1VWDPuqiMPDD2P--Oka-yJgh8z7ouCX4D?usp=sharing)          | Mono              | Yes | 640 x 192                | 0.099 |0.708 |4.372| 0.175 |0.900 |0.967| 0.984|
+| [`mono+stereo_640x192`](https://drive.google.com/drive/folders/1_HPsL1Vg3s0LdOykfTT0aMlE6-u3IxQn?usp=sharing)   | Mono + Stereo     | Yes | 640 x 192                | 0.098| 0.683| 4.333| 0.174| 0.904| 0.967| 0.984|
+| [`mono_1024x320`](https://drive.google.com/drive/folders/1EDTSZ59CGW9rUoDL3EwEKn3PpZpUUGsS?usp=sharing)         | Mono              | Yes | 1024 x 320               | 0.096|  0.714|  4.292|  0.172|  0.908|  0.968|  0.984|
+| [`mono+stereo_1024x320`](https://drive.google.com/drive/folders/1tez1RQFO33MMyVAq_gkOVHoL2TO98-TH?usp=sharing)  | Mono + Stereo     | Yes | 1024 x 320               | 0.093 |0.671 |4.202 |0.169 |0.912 |0.969 |0.985|
+| [`mono_1280x384`](https://drive.google.com/drive/folders/1l3egRvLaoBqgYrgfktgpJt613QwZ4twT?usp=sharing)         | Mono              | Yes | 1280 x 384               | 0.094 |0.682| 4.200| 0.170| 0.912| 0.969| 0.984|
 
 
 
@@ -92,7 +93,9 @@ You can train on a custom monocular or stereo dataset by writing a new dataloade
 
 PLease download the ImageNet-1K pretrained MPViT [model](https://dl.dropbox.com/s/y3dnmmy8h4npz7a/mpvit_small.pth) to `./ckpt/`.
 
-For training, please download monodepth2, replace the depth network, and revise the setting of the optimizer and learning rate according to `trainer.py`. 
+For training, please download monodepth2, replace the depth network, and revise the setting of the depth network, the optimizer and learning rate according to `trainer.py`. 
+
+Because of the different torch version between MonoViT and Monodepth2, the func `transforms.ColorJitter.get_params` in dataloader should also be revised to `transforms.ColorJitter`.
 
 By default models and tensorboard event files are saved to `./tmp/<model_name>`.
 This can be changed with the `--log_dir` flag.
@@ -120,12 +123,12 @@ CUDA_VISIBLE_DEVICES=1 python train.py --model_name mono_model
 ## 📊 KITTI evaluation
 
 To prepare the ground truth depth maps, please follow the monodepth2.
-```
+
 ...assuming that you have placed the KITTI dataset in the default location of `./kitti_data/`.
 
 The following example command evaluates the epoch 19 weights of a model named `mono_model` (Note that please use `evaluate_depth.py` for 640x192 models and `evaluate_hr_depth.py --height 320/384 --width 1024/1280` for the others):
 ```shell
-python evaluate_depth.py --load_weights_folder ~/tmp/mono_model/models/weights_19/ --eval_mono
+python evaluate_depth.py --load_weights_folder ./tmp/mono_model/models/weights_19/ --eval_mono
 ```
 
 
@@ -137,6 +140,8 @@ The three different values possible for `eval_split` are explained here:
 | **`eigen`**           | 697           | `--split eigen_zhou` (default) or `--split eigen_full` | The standard Eigen test files |
 | **`eigen_benchmark`** | 652           | `--split eigen_zhou` (default) or `--split eigen_full`  | Evaluate with the improved ground truth from the [new KITTI depth benchmark](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction) |
 | **`benchmark`**       | 500           | `--split benchmark`        | The [new KITTI depth benchmark](http://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction) test files. |
+
+## Contact us
 
 Contact us: zhaocqilc@gmail.com
 
