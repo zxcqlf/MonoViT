@@ -2,7 +2,7 @@
 
 This is the reference PyTorch implementation for training and testing depth estimation models using the method described in
 
-> **MonoViT: Self-Supervised Monocular Depth Estimation with a Vision Transformer** [arxiv]()
+> **MonoViT: Self-Supervised Monocular Depth Estimation with a Vision Transformer** [arxiv](https://arxiv.org/abs/2208.03543)
 > 
 >Chaoqiang Zhao*, Youmin Zhang*, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia
 
