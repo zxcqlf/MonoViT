@@ -16,7 +16,7 @@ If you find our work useful in your research please consider citing our paper:
 ```
 @inproceedings{monovit,
   title={MonoViT: Self-Supervised Monocular Depth Estimation with a Vision Transformer},
-  author={Chaoqiang Zhao, Youmin Zhang, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia},
+  author={Zhao, Chaoqiang and Zhang, Youmin and Poggi, Matteo and Tosi, Fabio and Guo, Xianda and Zhu, Zheng and Huang, Guan and Tang, Yang and Mattoccia, Stefano},
   booktitle={International Conference on 3D Vision},
   year={2022}
 }
