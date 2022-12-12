@@ -6,6 +6,7 @@ This is the reference PyTorch implementation for training and testing depth esti
 > 
 >Chaoqiang Zhao*, Youmin Zhang*, Matteo Poggi, Fabio Tosi, Xianda Guo,Zheng Zhu, Guan Huang, Yang Tang, Stefano Mattoccia
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/monovit-self-supervised-monocular-depth/monocular-depth-estimation-on-kitti-eigen-1)](https://paperswithcode.com/sota/monocular-depth-estimation-on-kitti-eigen-1?p=monovit-self-supervised-monocular-depth)
 
 <div class='paper-box'><div class='paper-box-image'><img src='fig/kittiandds.png' alt="sym" width="90%"></div>
 <div class='paper-box-text' markdown="1">
